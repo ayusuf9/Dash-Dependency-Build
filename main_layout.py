@@ -198,8 +198,8 @@ def get_page3(
         'filters_row': {
             'display': 'flex',
             'flexWrap': 'wrap',
-            'gap': '10px',
-            'alignItems': 'center',
+            'gap': '15px',
+            'alignItems': 'flex-end',
             'justifyContent': 'flex-start',
             'margin': '0 auto',
             'width': '100%',
@@ -209,12 +209,16 @@ def get_page3(
             'minWidth': 'auto',
             'padding': '0 5px',
             'marginBottom': '0px',
+            'display': 'flex',
+            'flexDirection': 'column',
+            'justifyContent': 'flex-end',
         },
         'button_container': {
             'display': 'flex',
-            'alignItems': 'center',
+            'alignItems': 'flex-end',
             'padding': '0 5px',
-            'marginBottom': '0px',
+            'marginBottom': '8px',
+            'height': '100%',
         },
         'label': {
             'display': 'block',
@@ -227,6 +231,9 @@ def get_page3(
             'width': '240px',
             'fontFamily': "'DM Sans', sans-serif",
             'fontSize': '14px',
+            'overflow': 'hidden',
+            'textOverflow': 'ellipsis',
+            'whiteSpace': 'nowrap',
         },
         'chart_container': {
             'display': 'flex',
@@ -391,8 +398,11 @@ def get_page3(
                                         searchable=True,
                                         description="Country Exposure",
                                         clearable=False,
-                                        maxValues=3
-                                        #limit=3
+                                        maxValues=3,
+                                        maxDropdownHeight=300,
+                                        nothingFound="No options found",
+                                        valueComponent={"maxWidth": "100%", "textOverflow": "ellipsis", "display": "block", "overflow": "hidden", "whiteSpace": "nowrap"},
+                                        itemComponent={"maxWidth": "100%", "textOverflow": "ellipsis", "display": "block", "overflow": "hidden", "whiteSpace": "nowrap"}
                                     ),
                                 ]
                             ),
@@ -406,7 +416,10 @@ def get_page3(
                                         style=styles['dropdown_sector'],
                                         description="Sector Type",
                                         searchable=True,
-                                        clearable=True
+                                        clearable=True,
+                                        maxDropdownHeight=300,
+                                        nothingFound="No options found",
+                                        itemComponent={"maxWidth": "100%", "textOverflow": "ellipsis", "display": "block", "overflow": "hidden", "whiteSpace": "nowrap"}
                                     )
                                 ]
                             ),
@@ -421,7 +434,11 @@ def get_page3(
                                         placeholder="",
                                         searchable=True,
                                         clearable=False,
-                                        maxValues=2
+                                        maxValues=2,
+                                        maxDropdownHeight=300,
+                                        nothingFound="No options found",
+                                        valueComponent={"maxWidth": "100%", "textOverflow": "ellipsis", "display": "block", "overflow": "hidden", "whiteSpace": "nowrap"},
+                                        itemComponent={"maxWidth": "100%", "textOverflow": "ellipsis", "display": "block", "overflow": "hidden", "whiteSpace": "nowrap"}
                                     ),
                                 ]
                             ),
@@ -432,7 +449,8 @@ def get_page3(
                                         'Download Data',
                                         id='download-csv-button',
                                         color='primary',
-                                        className='me-2'
+                                        className='me-2',
+                                        style={'height': '36px'}
                                     ),
                                     dcc.Download(id='download-csv'),
                                 ]
