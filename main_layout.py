@@ -212,6 +212,8 @@ def get_page3(
             'display': 'flex',
             'flexDirection': 'column',
             'justifyContent': 'flex-end',
+            'overflow': 'hidden',
+            'maxWidth': '100%',
         },
         'button_container': {
             'display': 'flex',
@@ -401,8 +403,11 @@ def get_page3(
                                         maxValues=3,
                                         maxDropdownHeight=300,
                                         nothingFound="No options found",
-                                        valueComponent={"maxWidth": "100%", "textOverflow": "ellipsis", "display": "block", "overflow": "hidden", "whiteSpace": "nowrap"},
-                                        itemComponent={"maxWidth": "100%", "textOverflow": "ellipsis", "display": "block", "overflow": "hidden", "whiteSpace": "nowrap"}
+                                        styles={
+                                            "value": {"maxWidth": "100%", "textOverflow": "ellipsis", "whiteSpace": "nowrap"},
+                                            "item": {"maxWidth": "100%", "textOverflow": "ellipsis", "whiteSpace": "nowrap"},
+                                            "values": {"maxWidth": "100%", "display": "flex", "flexWrap": "nowrap", "overflow": "hidden"}
+                                        }
                                     ),
                                 ]
                             ),
@@ -419,7 +424,10 @@ def get_page3(
                                         clearable=True,
                                         maxDropdownHeight=300,
                                         nothingFound="No options found",
-                                        itemComponent={"maxWidth": "100%", "textOverflow": "ellipsis", "display": "block", "overflow": "hidden", "whiteSpace": "nowrap"}
+                                        styles={
+                                            "item": {"maxWidth": "100%", "textOverflow": "ellipsis", "whiteSpace": "nowrap"},
+                                            "input": {"textOverflow": "ellipsis", "whiteSpace": "nowrap"}
+                                        }
                                     )
                                 ]
                             ),
@@ -437,8 +445,11 @@ def get_page3(
                                         maxValues=2,
                                         maxDropdownHeight=300,
                                         nothingFound="No options found",
-                                        valueComponent={"maxWidth": "100%", "textOverflow": "ellipsis", "display": "block", "overflow": "hidden", "whiteSpace": "nowrap"},
-                                        itemComponent={"maxWidth": "100%", "textOverflow": "ellipsis", "display": "block", "overflow": "hidden", "whiteSpace": "nowrap"}
+                                        styles={
+                                            "value": {"maxWidth": "100%", "textOverflow": "ellipsis", "whiteSpace": "nowrap"},
+                                            "item": {"maxWidth": "100%", "textOverflow": "ellipsis", "whiteSpace": "nowrap"},
+                                            "values": {"maxWidth": "100%", "display": "flex", "flexWrap": "nowrap", "overflow": "hidden"}
+                                        }
                                     ),
                                 ]
                             ),
