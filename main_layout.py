@@ -17,16 +17,6 @@ from components.data_loader import load_exposure_data, load_latest_data #load_ex
 # Set React version for dash-mantine-components
 _set_react_version("18.2.0")
 
-# Utility function to determine if a component should be rendered
-def should_render_component(component_id, default=True):
-    # This is a placeholder implementation - you could expand this to read from config or environment variables
-    # For now, we'll only have special handling for the market-type-dropdown
-    if component_id == 'market-type-dropdown':
-        # Checking an environment variable to determine if this component should render
-        # You can set this environment variable to control the rendering
-        return os.environ.get('RENDER_MARKET_DROPDOWN', '1') == '1'
-    return default
-
 nav_base_style = {
     'transition': 'all 0.3s ease',
     'padding': '8px 16px',
@@ -372,28 +362,15 @@ def get_page3(
                     html.Div(
                         style=styles['filters_row'],
                          children=[
+                            # Add back the hidden input for market type
                             html.Div(
                                 style=styles['filter_item'],
                                 children=[
-                                    dmc.Select(
-                                        id='market-type-dropdown',
-                                        description="Market Type",
-                                        data=[{'value': mt, 'label': mt.title()} for mt in market_types],
-                                        value=default_market_type,
-                                        style={
-                                            'width': '170px',
-                                            'fontFamily': "'DM Sans', sans-serif",
-                                            'fontSize': '14px',
-                                            'display': 'block' if should_render_component('market-type-dropdown') else 'none'
-                                        },
-                                        searchable=False,
-                                        clearable=False
-                                    ),
                                     dcc.Input(
                                         id='market-type-hidden-input',
                                         type='hidden',
                                         value=default_market_type
-                                    ) if not should_render_component('market-type-dropdown') else None
+                                    )
                                 ]
                             ),
                             html.Div(

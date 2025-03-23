@@ -122,13 +122,12 @@ def register_callbacks(app):
     @app.callback(
         Output('exposure-type-dropdown', 'options'),
         Output('exposure-type-dropdown', 'value'),
-        [Input('market-type-dropdown', 'value'),
-         Input('market-type-hidden-input', 'value')],
+        [Input('market-type-hidden-input', 'value')],
     )
-    def update_country_dropdown(market_type, hidden_market_type):
-        # Use hidden input value if dropdown value is None
+    def update_country_dropdown(market_type):
+        # Now we're only using the hidden input value
         if market_type is None:
-            market_type = hidden_market_type if hidden_market_type is not None else "Developed Market"
+            market_type = "Developed Market"
         
         #countries = data[data['market_type'] == market_type]['country_exposure_name'].unique()
         countries = data['country_exposure_name'].unique()
@@ -142,14 +141,13 @@ def register_callbacks(app):
     @app.callback(
         Output('sector-dropdown', 'options'),
         Output('sector-dropdown', 'value'),
-        [Input('market-type-dropdown', 'value'),
-         Input('market-type-hidden-input', 'value'),
+        [Input('market-type-hidden-input', 'value'),
          Input('exposure-type-dropdown', 'value')]
     )
-    def update_sector_dropdown(market_type, hidden_market_type, countries):
-        # Use hidden input value if dropdown value is None
+    def update_sector_dropdown(market_type, countries):
+        # Now we're only using the hidden input value
         if market_type is None:
-            market_type = hidden_market_type if hidden_market_type is not None else "Developed Market"
+            market_type = "Developed Market"
             
         if not isinstance(countries, list):
             countries = [countries]
@@ -175,17 +173,16 @@ def register_callbacks(app):
             Output('securities-dropdown', 'value'),
         ],
         [
-            Input('market-type-dropdown', 'value'),
             Input('market-type-hidden-input', 'value'),
             Input('exposure-type-dropdown', 'value'),
             Input('sector-dropdown', 'value')
         ],
         [State('securities-dropdown', 'value')]
     )
-    def update_securities_dropdown(market_type, hidden_market_type, countries, sector, current_securities):
-        # Use hidden input value if dropdown value is None
+    def update_securities_dropdown(market_type, countries, sector, current_securities):
+        # Use the market-type value directly from the hidden input
         if market_type is None:
-            market_type = hidden_market_type if hidden_market_type is not None else "Developed Market"
+            market_type = "Developed Market"
         if countries is None:
             countries = ['China', 'Hong Kong']
 
@@ -229,17 +226,16 @@ def register_callbacks(app):
             Output('security-alert', 'children')
         ],
         [
-            Input('market-type-dropdown', 'value'),
             Input('market-type-hidden-input', 'value'),
             Input('exposure-type-dropdown', 'value'),
             Input('sector-dropdown', 'value'),
             Input('securities-dropdown', 'value')
         ]
     )
-    def update_graphs(market_type, hidden_market_type, countries, sector, securities):
-        # Use hidden input value if dropdown value is None
+    def update_graphs(market_type, countries, sector, securities):
+        # Use the market-type value directly from the hidden input
         if market_type is None:
-            market_type = hidden_market_type if hidden_market_type is not None else "Developed Market"
+            market_type = "Developed Market"
             
         if not securities:
             return no_update, no_update, no_update, no_update, True, "Please select at least one security"
@@ -1091,18 +1087,17 @@ def register_callbacks(app):
     @app.callback(
         Output('download-csv', 'data'),
         Input('download-csv-button', 'n_clicks'),
-        [State('market-type-dropdown', 'value'),
-         State('market-type-hidden-input', 'value'),
+        [State('market-type-hidden-input', 'value'),
          State('securities-dropdown', 'value')],
         prevent_initial_call=True
     )
-    def download_csv(n_clicks, market_type, hidden_market_type, securities):
+    def download_csv(n_clicks, market_type, securities):
         if n_clicks is None or not securities:
             return no_update
             
-        # Use hidden input value if dropdown value is None
+        # Use the market-type value directly from the hidden input
         if market_type is None:
-            market_type = hidden_market_type if hidden_market_type is not None else "Developed Market"
+            market_type = "Developed Market"
 
         # Handle single security selection
         if not isinstance(securities, list):
