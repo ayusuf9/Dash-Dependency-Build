@@ -190,10 +190,11 @@ def get_page3(
             'fontFamily': "'DM Sans', sans-serif",
         },
         'filter_container': {
-            'backgroundColor': 'rgba(245, 245, 245, 0.7)',
+            'backgroundColor': '#ffffff',
             'padding': '15px 15px 11px 15px',
             'marginTop': '-11px',
             'borderRadius': '8px',
+            'boxShadow': '0 1px 3px rgba(0,0,0,0.1)',
         },
         'filters_row': {
             'display': 'flex',

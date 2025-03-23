@@ -61,29 +61,34 @@ def get_date_range(fig, days):
     end_date = get_max_date(fig)
     if end_date is None:
         return [None, None]
+    
+    # Convert end_date to pandas datetime if it's not already
+    if isinstance(end_date, (int, float)):
+        end_date = pd.to_datetime(end_date, unit='ms')
+    
+    # Calculate start date directly from end date
+    start_date = end_date - pd.Timedelta(days=days)
+    
+    # Check if we have data that would limit the start date
     min_date = None
     for trace in fig.data:
         if hasattr(trace, 'x') and len(trace.x) > 0:
             try:
-                trace_min = min(pd.to_datetime(date) if isinstance(date, str) else date for date in trace.x)
+                dates = [pd.to_datetime(date) if isinstance(date, str) else date for date in trace.x]
+                trace_min = min(dates)
                 if min_date is None or trace_min < min_date:
                     min_date = trace_min
             except:
                 continue
-
-    if min_date is None:
-        return [end_date - pd.Timedelta(days=days), end_date]
-
-    if isinstance(end_date, (int, float)) and isinstance(min_date, (int, float)):
-        start_date = max(min_date, end_date - (days * 24 * 60 * 60 * 1000))
-    else:
-        if isinstance(end_date, (int, float)):
-            end_date = pd.to_datetime(end_date, unit='ms')
+    
+    # If there's data with a minimum date later than our calculated start date,
+    # use that as the start date to avoid empty space
+    if min_date is not None:
         if isinstance(min_date, (int, float)):
             min_date = pd.to_datetime(min_date, unit='ms')
-
-        start_date = max(min_date, end_date - pd.Timedelta(days=days))
-
+        start_date = max(min_date, start_date)
+    
+    # Standardize output to ensure consistent date handling
     return [start_date, end_date]
 
 
@@ -560,7 +565,12 @@ def register_callbacks(app):
                     gridwidth=0.5,
                     fixedrange=True,
                     constrain='domain',
-                    layer='above traces'
+                    layer='above traces',
+                    tickformat="%b %Y",  # Format as "Jan 2020"
+                    ticklabelmode="period",  # Position labels between ticks for periods
+                    rangebreaks=[
+                        dict(bounds=["sat", "mon"])  # Hide weekends for smoother appearance
+                    ]
                 )
             )
 
@@ -959,7 +969,9 @@ def register_callbacks(app):
             tickfont=dict(weight='bold', size=15),
             title_font=dict(weight='bold', size=15),
             # Set fixed range to ensure all periods are visible
-            range=[2013.5, 2025.5]
+            range=[2013.5, 2025.5],
+            dtick=1,  # Force 1-year intervals
+            tickformat="d"  # Display as digits without decimals
         )
 
         fig_bubble.update_layout(
@@ -1036,6 +1048,20 @@ def register_callbacks(app):
             automargin=True
         )
 
+        fig_parity.update_xaxes(
+            ticks='outside',
+            tickwidth=2,
+            linecolor='grey',
+            linewidth=4.5,
+            mirror=True,
+            title="",
+            showgrid=False,
+            tickfont=dict(weight='bold', size=15),
+            title_font=dict(weight='bold', size=15),
+            tickformat="%b %Y",  # Format as "Jan 2020"
+            dtick="M6"  # 6-month intervals
+        )
+
         for fig in [fig_pct, fig_revenue]:
             max_fig_date = get_max_date(fig)
             if max_fig_date is None:
@@ -1055,17 +1081,29 @@ def register_callbacks(app):
                             dict(
                                 label="2YR",
                                 method="relayout",
-                                args=[{"xaxis.range": get_date_range(fig, 365 * 2)}],
+                                args=[{
+                                    "xaxis.range": get_date_range(fig, 365 * 2),
+                                    "xaxis.dtick": "M3",  # 3-month intervals
+                                    "xaxis.tickformat": "%b %Y"  # Format as "Jan 2020"
+                                }],
                             ),
                             dict(
                                 label="4YR",
                                 method="relayout",
-                                args=[{"xaxis.range": get_date_range(fig, 365 * 4)}],
+                                args=[{
+                                    "xaxis.range": get_date_range(fig, 365 * 4),
+                                    "xaxis.dtick": "M6",  # 6-month intervals
+                                    "xaxis.tickformat": "%b %Y"  # Format as "Jan 2020"
+                                }],
                             ),
                             dict(
                                 label="Max",
                                 method="relayout",
-                                args=[{"xaxis.autorange": True}],
+                                args=[{
+                                    "xaxis.autorange": True,
+                                    "xaxis.dtick": "M12",  # 12-month intervals
+                                    "xaxis.tickformat": "%b %Y"  # Format as "Jan 2020"
+                                }],
                             ),
                         ],
                         font=dict(
@@ -1076,11 +1114,14 @@ def register_callbacks(app):
                 ]
             )
 
+            # Apply default 2YR view with consistent tick spacing
             date_range = get_date_range(fig, 365 * 2)
             if date_range[0] is not None and date_range[1] is not None:
-                fig.update_xaxes(range=date_range)
-
-            fig.update_xaxes(range=date_range)
+                fig.update_xaxes(
+                    range=date_range,
+                    dtick="M3",  # 3-month intervals for 2YR view
+                    tickformat="%b %Y"  # Format as "Jan 2020"
+                )
 
         return fig_pct, fig_revenue, fig_bubble, fig_parity, False, ""
 
